@@ -1,9 +1,14 @@
 import puppeteer, {Page} from "puppeteer";
 
-export async function scrapePgn(url: string) {
-    const browser = await puppeteer.launch({
-        headless: "new"
+async function getBrowser() {
+    return await puppeteer.launch({
+        headless: "new",
+        args: ["--no-sandbox"]
     })
+}
+
+export async function scrapePgn(url: string) {
+    const browser = await getBrowser()
 
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "domcontentloaded" })
@@ -25,9 +30,7 @@ export async function scrapePgn(url: string) {
 }
 
 async function lichessShare(pgn: string) {
-    const browser = await puppeteer.launch({
-        headless: "new"
-    })
+    const browser = await getBrowser()
 
     const page = await browser.newPage()
     await page.goto("https://lichess.org/paste")
