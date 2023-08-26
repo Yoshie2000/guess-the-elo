@@ -20,6 +20,7 @@ export default function Games(
     }
 ) {
     const [gameURL, setGameURL] = useState("")
+    const extractedURL = gameURL.match(/https:\/\/(www\.)?chess\.com\/((game\/live)|(game\/daily)|(live\/game)|(daily\/game))\/[0-9]+/g)?.[0]
 
     const {toast} = useToast()
 
@@ -50,20 +51,20 @@ export default function Games(
     }, [games])
 
     return (
-        <main className={"flex min-h-screen flex-col items-center gap-6 sm:gap-12 p-6 sm:p-12"}>
+        <main className={"flex min-h-screen-dvh flex-col items-center gap-6 sm:gap-12 p-6 sm:p-12"}>
             <h1 className={"text-xl"}>Guess The Elo Submission</h1>
 
             <Card className={"flex gap-4 flex-col w-full p-4"}>
 
                 <div className={"flex gap-4 w-auto"}>
-                    <Input className={"flex-grow max-w-[22.5rem]"}
-                           placeholder={"https://www.chess.com/game/*****/***********"} value={gameURL}
+                    <Input className={"flex-grow max-w-[24rem]"}
+                           placeholder={"Paste chess.com share text (must include a game url)"} value={gameURL}
                            onChange={e => setGameURL(e.target.value)}/>
 
                     {!addSubmission.isLoading ?
                         <Button className={"whitespace-nowrap"}
-                                disabled={!gameURL.includes("https://www.chess.com/game/")}
-                                onClick={() => addSubmission.mutate(gameURL)}>
+                                disabled={!extractedURL}
+                                onClick={() => extractedURL && addSubmission.mutate(extractedURL)}>
                             Submit Game
                         </Button>
                         :
@@ -73,9 +74,6 @@ export default function Games(
                         </Button>
                     }
                 </div>
-
-                <small>Accepted link format: https://www.chess.com/game/live/GAME_ID or
-                    https://www.chess.com/game/daily/GAME_ID</small>
 
             </Card>
 
